@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"webcrawler/base"
+	"Webcrawler-Framework/webcrawler/base"
 	"errors"
 	"sync"
 	"fmt"

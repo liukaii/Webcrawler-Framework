@@ -1,9 +1,9 @@
 package downloader
 
 import (
-	"webcrawler/base"
+	"Webcrawler-Framework/webcrawler/base"
 	"net/http"
-	"webcrawler/middleware"
+	"Webcrawler-Framework/webcrawler/middleware"
 	"reflect"
 	"fmt"
 	"errors"

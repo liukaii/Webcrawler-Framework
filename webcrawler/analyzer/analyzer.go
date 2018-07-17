@@ -1,13 +1,14 @@
 package analyzer
 
 import (
-	"webcrawler/base"
+	"Webcrawler-Framework/webcrawler/base"
 	"net/http"
-	"webcrawler/middleware"
+	"Webcrawler-Framework/webcrawler/middleware"
 	"errors"
 	"net/url"
-	"github.com/op/go-logging"
+	"Webcrawler-Framework/logging"
 	"fmt"
+	"reflect"
 )
 
 var logger logging.Logger = base.NewLogger()
@@ -107,6 +108,50 @@ func appendErrorList(errorList []error, err error) []error {
 	return append(errorList, err)
 }
 
+
+type myAnalyzerPool struct {
+	pool middleware.Pool
+	etype reflect.Type
+}
+
+type GenAnalyzer func() Analyzer
+
+func NewAnalyzerPool(total uint32, gen GenAnalyzer) (AnalyzerPool, error) {
+	etype := reflect.TypeOf(gen())
+	genEntity := func() middleware.Entity{ return gen()}
+	pool, err := middleware.NewPool(total, etype, genEntity)
+	if err != nil {
+		return nil, err
+	}
+	anpool := & myAnalyzerPool{pool, etype}
+	return anpool, nil
+}
+
+
+func(anpool *myAnalyzerPool) Take() (Analyzer, error) {
+	anEntity, err := anpool.pool.Take()
+	if err != nil {
+		return nil, err
+	}
+	analyzer, ok := anEntity.(Analyzer)
+	if !ok {
+		errMsg := fmt.Sprintf("he type of entity is NOT %s!\n", anpool.etype)
+		panic(errors.New(errMsg))
+	}
+	return analyzer, nil
+}
+
+func (anpool *myAnalyzerPool) Return(an Analyzer) error {
+	return anpool.pool.Return(an)
+}
+
+func (anpool *myAnalyzerPool) Total() uint32 {
+	return anpool.pool.Total()
+}
+
+func (anpool *myAnalyzerPool) Used() uint32 {
+	return anpool.pool.Used()
+}
 
 
 

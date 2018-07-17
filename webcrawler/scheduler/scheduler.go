@@ -1,14 +1,17 @@
 package scheduler
 
 import (
-	"webcrawler/analyzer"
-	"webcrawler/itempipeline"
+	anlz "Webcrawler-Framework/webcrawler/analyzer"
+	ipl  "Webcrawler-Framework/webcrawler/itempipeline"
 	"net/http"
+	"Webcrawler-Framework/webcrawler/middleware"
+	"Webcrawler-Framework/webcrawler/downloader"
 )
 
+
 type Scheduler interface {
-	Start(channelLen uint, poolSize uint32, crawlDepth uint32, httpClientGenerator GenHttpClient, respParsers []analyzer.ParseResponse,
-	itemProcessors []itempipeline.ProcessItem, firstHttpReq *http.Request) (err error)
+	Start(channelLen uint, poolSize uint32, crawlDepth uint32, httpClientGenerator GenHttpClient, respParsers []anlz.ParseResponse,
+	itemProcessors []ipl.ProcessItem, firstHttpReq *http.Request) (err error)
 
 	Stop() bool
 
@@ -30,6 +33,85 @@ type SchedSummary interface {
 	Detail() string
 	Same(other SchedSummary) bool
 }
+
+
+type myScheduler struct {
+	poolSize uint32
+	channelLen uint
+	crawlDepth uint32
+	primaryDomain string	//主域名
+
+
+	chanman middleware.ChannelManager
+	stopSign middleware.StopSign
+	dlpool downloader.PageDownloaderPool
+	analyzerPool anlz.AnalyzerPool
+	itemPipeline ipl.ItemPipeline
+
+	running uint32    //运行标记。0表示未运行，1表示已运行，2表示已停止
+
+	reqCache requestCache   //请求缓存
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

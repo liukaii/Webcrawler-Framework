@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"bytes"
 	"fmt"
-	"github.com/op/go-logging"
+	"Webcrawler-Framework/logging"
 )
 
 
