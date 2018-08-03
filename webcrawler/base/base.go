@@ -7,16 +7,9 @@ import (
 	"Webcrawler-Framework/logging"
 )
 
-
 func NewLogger() logging.Logger {
 	return logging.NewSimpleLogger()
 }
-
-
-
-
-
-
 
 type Request struct {
 	httpReq *http.Request
